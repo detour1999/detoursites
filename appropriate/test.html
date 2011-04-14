@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <title>untitled</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="generator" content="Geany 0.19.1" />
+    <style>
+        @-webkit-keyframes spin {
+          0% { -webkit-transform-origin: 100% 100%; -webkit-transform: rotateX(0deg) skew(0deg, 0deg); }
+          100%   { -webkit-transform-origin: 100% 100%; -webkit-transform: rotateX(90deg) skew(5deg, 0deg); }
+        }
+        @-webkit-keyframes spin2 {
+          0% { -webkit-transform-origin: 0% 0%; -webkit-transform: rotateX(90deg) skew(-5deg, 0deg); }
+          100%   { -webkit-transform-origin: 0% 0%; -webkit-transform: rotateX(0deg) skew(0deg, 0deg); }
+        }
+        .box span { font-family: arial; font-weight:bold; font-size: 72px; display:inline-block; }
+        .scale { -webkit-animation: spin 0.15s infinite linear; }
+        .scale2 { -webkit-animation: spin2 0.15s infinite linear; }
+        .dv { background-color: #FFF; border:1px solid #333; display:block; height:45px; width:80px; overflow:hidden; text-align: center; line-height:100%; }
+        .dv > div > span { width:100%; vertical-align:middle }
+        .dv > div { height:200%; }
+        .down > div { position:relative; top:-100%; }
+        .spn { position:absolute; }
+        .spn.top { z-index:20 }
+        .spn.top > .dv { z-index:15 }
+        .spn.down { z-index:10 }
+        .spn.down > .dv { z-index:5 }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript"></script>
+    <script>
+    $(function() {
+    var ctr, loop;
+    var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
+    var chars = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
+    var numbers = "0123456789";
+    var duration = 150;
+
+    function switchToNext(loopthis, end, box) {
+        box.removeClass('normal').addClass('scale');
+        box.text(loopthis.charAt(ctr));
+        ctr++;
+        if(ctr == end) clearInterval(loop);
+        if(ctr > loopthis.length -1) ctr = 0;
+        }
+
+    function loopThrough(a, b) {
+        var tmpStart, tmpEnd, stype, etype, loopthis;
+        stype = letters;
+        tmpStart = stype.indexOf(a);
+        if(tmpStart < 0) { stype = numbers; tmpStart = numbers.indexOf(a); }
+        if(tmpStart < 0) { stype = chars; tmpStart = chars.indexOf(a); }
+        etype = letters;
+        tmpEnd = etype.indexOf(b);
+        if(tmpEnd < 0) { etype = numbers; tmpEnd = numbers.indexOf(b);}
+        if(tmpEnd < 0) { etype = chars; tmpEnd = chars.indexOf(b);}
+        if(stype !== etype) { loopthis = stype + etype; tmpEnd = tmpEnd + stype.length } 
+            else { loopthis = stype; }
+        ctr = tmpStart;
+        box = $("div.box").children("span#1").find("span");
+        tmpbox = $("div.box").children("span#2").find("span");
+        boxa = $("div.box").children("span#1").children("div.up").find("span");
+        boxb = $("div.box").children("span#1").children("div.down").find("span");
+        tmpboxa = $("div.box").children("span#2").children("div.up").find("span");
+        tmpboxb = $("div.box").children("span#2").children("div.down").find("span");
+        var delay;
+        loop = setInterval(function() {
+            end = tmpEnd + 1;
+            boxa.parent().parent().addClass('scale');
+            delay = setTimeout(function() { boxb.parent().parent().addClass('scale2'); }, duration);
+            if(ctr+1 < end) { setTimeout( function(){ tmpboxa.text(loopthis.charAt(ctr));}, duration/2); }
+            boxa.text(loopthis.charAt(ctr));
+            boxb.text(loopthis.charAt(ctr));
+            if(ctr == tmpStart) tmpboxb.text(loopthis.charAt(ctr)); else setTimeout(function() { tmpboxb.text(loopthis.charAt(ctr-1)); }, (duration/2));
+            ctr++;
+            if(ctr == end) { setTimeout(function() { boxb.parent().parent().removeClass('scale2'); }, duration); clearInterval(loop); boxa.parent().parent().removeClass('scale'); clearTimeout(delay); }
+            if(ctr > loopthis.length -1) ctr = 0;
+            }, duration);
+        }
+    var str = new String($("div.box").text());
+    loopThrough("A","9");
+
+    });
+    </script>
+</head>
+
+<body>
+    <div class='box'>
+    <span id="1" class='spn top'>
+        <div class='dv up'><div><span></span></div></div>
+        <div class='dv down'><div><span></span></div></div>
+    </span>
+    <span id="2" class='spn down'>
+        <div class='dv up'><div><span></span></div></div>
+        <div class='dv down'><div><span></span></div></div>
+    </span>
+    </div>
+</body>
+
+</html>
